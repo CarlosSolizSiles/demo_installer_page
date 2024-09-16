@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     // Importar el archivo .txt a la base de datos
     $conn->select_db($dbname);
-    $sql = "CREATE TABLE example (id int PRIMARY KEY, nombre_completo VARCHAR(100) NOT NULL, contraseña VARCHAR(100) NOT NULL );INSERT INTO example VALUE ($nombre_completo, $contrasena)";
+    $sql = "CREATE TABLE example (id int PRIMARY KEY, nombre_completo VARCHAR(100) NOT NULL, contraseña VARCHAR(100) NOT NULL );INSERT INTO `example`(`nombre_completo`, `contraseña`) VALUES ($nombre_completo, $contrasena)";
     if ($conn->multi_query($sql)) {
         echo "Datos importados exitosamente";
     } else {
