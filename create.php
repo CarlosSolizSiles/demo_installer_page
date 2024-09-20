@@ -1,31 +1,21 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $dbname = $_POST['dbname'];
-    $nombre_completo = $_POST['nombre_completo'];
-    $contrasena = $_POST['contrasena'];
- 
+    $username = $_POST['username'];
+    $pass = $_POST['pass'];
+
 
     // Crear la base de datos
-    $conn = new mysqli('localhost', 'root', '');
+    $conn = new mysqli('localhost', 'root', '', 'pruebaspiris');
     if ($conn->connect_error) {
         die("Conexión fallida: " . $conn->connect_error);
     }
 
-    $sql = "CREATE DATABASE $dbname";
+    $sql = "INSERT INTO `usuarios`(`username`, `pass`) VALUES ('$username', '$pass');";
     if ($conn->query($sql) === TRUE) {
-        echo "Base de datos creada exitosamente<br>";
+        echo "datos del usuarios se cambio con exito.";
     } else {
-        echo "Error creando la base de datos: " . $conn->error;
-    }
-    // Importar el archivo .txt a la base de datos
-    $conn->select_db($dbname);
-    $sql = "CREATE TABLE example (id int PRIMARY KEY, nombre_completo VARCHAR(100) NOT NULL, contraseña VARCHAR(100) NOT NULL );INSERT INTO `example`(`id`, `nombre_completo`, `contraseña`) VALUES ('1', '$nombre_completo', '$contrasena');";
-    if ($conn->multi_query($sql)) {
-        echo "Datos importados exitosamente";
-    } else {
-        echo "Error importando los datos: " . $conn->error;
+        echo "Error al canbiar los datos: " . $conn->error;
     }
 
     $conn->close();
 }
-?>
