@@ -1,9 +1,17 @@
 <?php
-require 'lib/checkFileExists.php'; // Asegúrate de incluir el archivo donde está la función
-
-if (!checkFileExists('history.log')) {
-    echo '<a href="formulario.php">Añadir Base de Datos</a>';
-} else {
-    echo 'El archivo history.log existe.';
+include "./lib/verificarPaso.php";
+switch (verificarPaso()) {
+    case 1:
+        include "./lib/cambiar_contrasena.php";
+        break;
+    case 2:
+        include "./lib/importar_base_datos.php";
+        break;
+    case 3:
+        include "./lib/importar_menu.php";
+        break;
+    default:
+        echo "terminado";
+        # code...
+        break;
 }
-?>
