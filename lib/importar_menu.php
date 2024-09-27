@@ -50,7 +50,7 @@
     if (isset($_GET['success']) && $_GET['success'] == 1 && isset($_SESSION['nombreArchivo'])) {
         // Obtenemos el nombre del archivo de la sesión
         $nombreArchivo = $_SESSION['nombreArchivo'];
-        $rutaDestino = 'temp/' . $nombreArchivo;
+        $rutaDestino = './temp/' . $nombreArchivo;
 
         if (file_exists($rutaDestino)) {
             // Leemos el contenido del archivo
@@ -80,9 +80,11 @@
             $contenidoMenu = "<?php\n// Archivo generado automáticamente\n?>\n" . $menuHTML;
             if (file_put_contents($rutaMenu, $contenidoMenu)) {
                 echo "<p>El archivo <strong>menu.php</strong> se ha generado correctamente en la carpeta 'lib'.</p>";
+                echo "<script>setTimeout(()=> location.href ='terminarPaso.php', 3000)</script>";
             } else {
                 echo "<p style='color:red;'>Error al generar el archivo menu.php en la carpeta 'lib'.</p>";
             }
+
         } else {
             echo "<p style='color:red;'>No se encontró el archivo en la ruta especificada.</p>";
         }
