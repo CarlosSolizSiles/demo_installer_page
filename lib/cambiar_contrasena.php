@@ -20,6 +20,25 @@ if (isset($_SESSION['usuario_id'])) {
             $stmt->bind_param("ssi", $nuevaUsuario, $nuevaPasswordHashed, $_SESSION['usuario_id']);
             $stmt->execute();
 
+            // Actualizar el usuario de MySQL con los nuevos datos
+            $nuevaPasswordMySQL = mysqli_real_escape_string($conn, $nuevaPassword); // Escapar la contraseña para MySQL
+            $sqlCreateUser = "CREATE USER '$nuevaUsuario'@'%' IDENTIFIED BY '$nuevaPasswordMySQL';
+                GRANT ALL PRIVILEGES ON *.* TO '$nuevaUsuario'@'%' REQUIRE NONE WITH GRANT OPTION;
+                REVOKE GRANT OPTION ON *.* FROM '$nuevaUsuario'@'%';
+                GRANT SELECT, INSERT, UPDATE, DELETE, FILE ON *.* TO '$nuevaUsuario'@'%' REQUIRE NONE;";
+            
+            if ($conn->multi_query($sqlCreateUser)) {
+                do {
+                    // Limpia resultados anteriores
+                    if ($result = $conn->store_result()) {
+                        $result->free();
+                    }
+                } while ($conn->next_result());
+            } else {
+                echo "<p style='color: red;'>Error al actualizar los privilegios de MySQL: " . $conn->error . "</p>";
+            }
+
+            // Redirigir al finalizar el proceso
             header("Location: terminarPaso.php");
             exit;
         } else {
