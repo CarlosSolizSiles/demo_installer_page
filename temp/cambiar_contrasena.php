@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 // Configuración de la base de datos
 $host = 'localhost';
 $db = 'pruebaspiris';  // Cambia esto por el nombre de tu base de datos
