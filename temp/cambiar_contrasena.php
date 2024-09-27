@@ -1,17 +1,7 @@
 <?php
 session_start();
 // Configuración de la base de datos
-$host = 'localhost';
-$db = 'pruebaspiris';  // Cambia esto por el nombre de tu base de datos
-$user = 'root';             // Cambia esto por tu usuario de MySQL
-$password = '';     // Cambia esto por tu contraseña de MySQL
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Error de conexión: " . $e->getMessage());
-}
+include "./lib/conn.php"; // Asegúrate de que esta conexión usa `mysqli`
 
 // Verificar si el usuario ya está autenticado
 if (isset($_SESSION['usuario_id'])) {
@@ -26,20 +16,16 @@ if (isset($_SESSION['usuario_id'])) {
             $nuevaPasswordHashed = password_hash($nuevaPassword, PASSWORD_BCRYPT);
 
             // Actualizar los datos del usuario en la base de datos
-            $stmt = $pdo->prepare("UPDATE usuarios SET username = :username, pass = :password WHERE id = :id");
-            $stmt->execute([
-                ':username' => $nuevaUsuario,
-                ':password' => $nuevaPasswordHashed,
-                ':id' => $_SESSION['usuario_id']
-            ]);
+            $stmt = $conn->prepare("UPDATE usuarios SET username = ?, pass = ? WHERE id = ?");
+            $stmt->bind_param("ssi", $nuevaUsuario, $nuevaPasswordHashed, $_SESSION['usuario_id']);
+            $stmt->execute();
 
             header("Location: terminarPaso.php");
-            // echo "<p>¡Cambios guardados correctamente!</p>";
+            exit;
         } else {
             echo "<p style='color: red;'>Las contraseñas no coinciden. Inténtalo de nuevo.</p>";
         }
     }
-    // Formulario para cambiar el nombre de usuario y la contraseña
 ?>
     <h2>Cambiar Nombre de Usuario y Contraseña</h2>
     <form method="post">
@@ -64,9 +50,11 @@ if (isset($_POST['usuario']) && isset($_POST['password'])) {
     $password = $_POST['password'];
 
     // Consultar la base de datos para obtener el usuario y la contraseña encriptada
-    $stmt = $pdo->prepare("SELECT id, pass FROM usuarios WHERE username = :username");
-    $stmt->execute([':username' => $usuario]);
-    $usuarioData = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = $conn->prepare("SELECT id, pass FROM usuarios WHERE username = ?");
+    $stmt->bind_param("s", $usuario);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $usuarioData = $result->fetch_assoc();
 
     if ($usuarioData && password_verify($password, $usuarioData['pass'])) {
         // Guardar el ID del usuario en la sesión
@@ -77,7 +65,6 @@ if (isset($_POST['usuario']) && isset($_POST['password'])) {
         echo "<p style='color: red;'>Nombre de usuario o contraseña incorrectos. Inténtalo de nuevo.</p>";
     }
 }
-
 ?>
 
 <h2>Iniciar Sesión</h2>

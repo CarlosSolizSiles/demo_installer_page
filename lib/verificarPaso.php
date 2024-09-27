@@ -15,7 +15,7 @@ function verificarPaso()
 
         // Use checkFileExists to verify if the module file exists
         if (checkFileExists($file)) {
-            return $i + 1;
+            return $i;
         }
     }
 

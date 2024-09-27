@@ -1,0 +1,2 @@
+https://web.whatsapp.com/ whatsapp
+http://localhost/phpmyadmin/index.php?route=/sql&pos=0&db=pruebaspiris&table=usuarios phpmyadmin

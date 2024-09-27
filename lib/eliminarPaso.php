@@ -35,5 +35,3 @@ function eliminarPaso($pasoAEliminar)
     }
 }
 
-
-echo eliminarPaso(0) ? "1": "0";
